@@ -1,7 +1,6 @@
 import Product from '../models/product.js';
 
 export const createProduct = async (req, res, next) => {
-    console.log(req.body)
     try {
         const imageFile = req.file
         if (!imageFile) return next(new Error('Attached file is not an image'))

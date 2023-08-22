@@ -1,4 +1,6 @@
 import express from 'express'
+import { validationErrors } from '../utilities/validationErrors.js'
+import { ordersCreateValidation } from '../validationsConfig.js'
 
 import { 
     createOrder,
@@ -7,5 +9,5 @@ import {
 
 export const orderRoutes = express.Router()
 
-orderRoutes.post('/orders', createOrder)
+orderRoutes.post('/orders', ordersCreateValidation, validationErrors, createOrder)
 orderRoutes.get('/orders', getAllOrders)
