@@ -10,13 +10,13 @@ export const createOrder = async (req, res, next) => {
         const email = order.user.email
         const newOrder = new Order(order)
         await newOrder.save()
-        await sgMail.send({
-            from: process.env.MAIL_USER,
-            to: email,
-            subject: 'Organick',
-            text: 'Thank you for your order! We will contact you asap!',
-            html: '<h1>Thank you for your order! We will contact you asap!</html>'
-        });
+        // await sgMail.send({
+        //     from: process.env.MAIL_USER,
+        //     to: email,
+        //     subject: 'Organick',
+        //     text: 'Thank you for your order! We will contact you asap!',
+        //     html: '<h1>Thank you for your order! We will contact you asap!</html>'
+        // });
         return res.status(200).json({ message: 'Order was cdreated successfly!' })
     } catch (error) {
         console.error('Error while saving order:', error);
