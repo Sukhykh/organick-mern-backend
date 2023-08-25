@@ -1,7 +1,11 @@
-import fs from "fs"
+import fs from "fs/promises"
 
-export const deleteFile = filePath => {
-    fs.unlink(filePath, err => {
-        if (err) throw (err)
-    })
+export const deleteFile = async filePath => {
+    try {
+        await fs.unlink(filePath);
+        console.log(`File ${filePath} deleted successfully`);
+    } catch (err) {
+        console.error(`Error deleting file ${filePath}:`, err);
+        throw err;
+    }
 }

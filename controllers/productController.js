@@ -1,4 +1,6 @@
 import Product from '../models/product.js';
+import { deleteFile } from '../utilities/deleteFile.js';
+import fs from 'fs';
 
 export const createProduct = async (req, res, next) => {
     try {
@@ -47,7 +49,7 @@ export const getOneProduct = async (req, res, next) => {
 export const updateProduct = async (req, res, next) => {
     try {
         const imageFile = req.file
-        const prodId = req.body.productId
+        const prodId = req.params.productId
         const product = await Product.findById(prodId)
         if (!product) return next(new Error('Product not found'))
         product.title = req.body.title
@@ -71,13 +73,15 @@ export const updateProduct = async (req, res, next) => {
 
 export const deleteProduct = async (req, res, next) => {
     try {
-        const prodId = req.body.productId
-        const product = await Product.findById(prodId)
-        if (!product) return next(new Error('Product not found'))
-        deleteFile(product.image)
-        const oldProduct = await Product.deleteOne(({ _id: prodId }))
-        if (!oldProduct) return next(new Error('Failed to delete product'))
-        return res.status(200).json({ message: 'Product was deleted successfly!' })
+        const prodId = req.params.productId;
+        const oldProduct = await Product.findOne({ _id: prodId });
+        if (!oldProduct) res.status(500).json({ message: 'Product not found' });
+        const imagePath = oldProduct.image;
+        deleteFile(imagePath)
+        await Product.findOneAndDelete({ _id: prodId });
+        const doc = await Product.findOne({ _id: prodId })
+        if (!doc) res.status(200).json({ succes: `Product was deleted successfly!` });
+        else res.status(500).json({ message: 'Failed to delete product' })
     } catch (error) {
         return next(error)
     }

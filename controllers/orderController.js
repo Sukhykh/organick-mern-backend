@@ -1,8 +1,5 @@
 import Order from '../models/order.js';
-import sgMail from '@sendgrid/mail';
-import dotenv from 'dotenv'
-dotenv.config()
-sgMail.setApiKey(process.env.API_KEY)
+import { transporter } from '../utilities/mailsender.js';
 
 export const createOrder = async (req, res, next) => {
     try {
@@ -10,13 +7,12 @@ export const createOrder = async (req, res, next) => {
         const email = order.user.email
         const newOrder = new Order(order)
         await newOrder.save()
-        // await sgMail.send({
-        //     from: process.env.MAIL_USER,
-        //     to: email,
-        //     subject: 'Organick',
-        //     text: 'Thank you for your order! We will contact you asap!',
-        //     html: '<h1>Thank you for your order! We will contact you asap!</html>'
-        // });
+        await transporter.sendMail({
+            from: 'kostiantyn-sukhykh@hotmail.com',
+            to: email,
+            subject: 'Organick',
+            text: 'Thank you for your order!',
+        })
         return res.status(200).json({ message: 'Order was cdreated successfly!' })
     } catch (error) {
         console.error('Error while saving order:', error);
